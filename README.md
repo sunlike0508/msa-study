@@ -349,6 +349,9 @@ REST, RPC, SOAP
 
 대신 성능은 조금 떨어질수 있음
 
+<img width="749" alt="image" src="https://github.com/user-attachments/assets/6fe2da35-1db5-4f63-b401-d0da4116d05d">
+
+
 2. 데이터 베이스 변경
 
 개별 데이터베이스로 분리(마이크로서비스랑 유사)
@@ -365,11 +368,25 @@ REST, RPC, SOAP
 
 CUD가 일어날때마다 읽기 db에 넘겨주기 (이때 살짝 딜레이를 줌, entual consistency)
 
+<img width="969" alt="image" src="https://github.com/user-attachments/assets/014df2f2-9c4b-4c52-8e6f-f3b29434fe1a">
+
+
 3. 서비스 내부 설계
 
 서비스 안에는 레이어드 설계 vs 도메인 설계(도메인 분할)
 
 세분도가 크기 때문에 API 퍼사드 통한 내부 클래스 수준의 오케스트레이션 필요
+
+<img width="1033" alt="image" src="https://github.com/user-attachments/assets/4f9be9cb-ecce-43b0-b69f-098d33feea70">
+
+4. 서비스 내부 설계
+
+서비스 안에는 레이어드 설계 vs 도메인 설계(도메인 분할)
+
+세분도가 크기 때문에 API 퍼사드 통한 내부 클래스 수준의 오케스트레이션 필요
+
+<img width="1019" alt="image" src="https://github.com/user-attachments/assets/534db24e-2159-420d-a246-24579e748a94">
+
 
 * 정리 
 
@@ -379,10 +396,98 @@ CUD가 일어날때마다 읽기 db에 넘겨주기 (이때 살짝 딜레이를 
 
 이를 낮추기 위해 논리적으로 분할, 전용 공유 라이브러리화, 도메인별 접근권한 분리
 
+<img width="1012" alt="image" src="https://github.com/user-attachments/assets/905eca62-d635-4d3b-899e-729d7ed4ffcd">
 
 
+### 이벤트기반 아키텍처
+
+확장성이 뛰어난 고성능 어플리케이션 개발에 쓰이는
+
+비동기 분산 아키텍처.
+
+다른 아키텍처에 내장 가능(ex: 이벤트 기반 마이크로서비스 아키텍처)
+
+브로커 토폴로지
+
+이벤트(사건)에 액션이 반응하는 방식 진행
+
+RabbitMQ, ActiveMQ등 경량 메시지 브로커
+
+#### 스타일은 두가지가 있음
+ 
+1) 코레오그래피(choreography): 각자 자율적 이벤트 처리
+
+장점 : 확장성, 응답성, 성능(이건 좀 상대적)
+
+단점 : 트랜잭션 통제 힘듬, 교착상태, 데이터비일관성, 에러처리 어려움
+
+<img width="680" alt="image" src="https://github.com/user-attachments/assets/3c0021eb-b2a0-4e8f-a78d-02605e2cf4d3">
+
+2) 오케스트레이션
+
+이벤트는 사건이 아니라 커멘드(일어나야할일)
+
+장점 : 에러처리
+
+단점 : 확장성, 중재자가 병목지점, 커플링으로 성능저하
+
+<img width="859" alt="image" src="https://github.com/user-attachments/assets/db2733d0-bee8-4f47-a89d-12e5e9db2967">
+
+### 공간 기반 아키텍처 스타일
+
+높은 확장성, 탄력성, 동시성
+
+동시 유저수가 매우 가변적이라 예측조차 곤란한 애플리케이션에 유용
+
+복제된 인 메모리 그리드
+
+데이터펌프, 데이터라이터, 데이터리더
+
+<img width="973" alt="image" src="https://github.com/user-attachments/assets/b5a911ae-b3c0-42f3-87b9-373d74d0136d">
 
 
+### 오케스트레이션 기반 서비스 지향 아키텍처 스타일
+
+제약이 많은 분산 아키텍처
+
+벤더 중심, 기술분할에 집착
+
+비즈니스 행위 재사용 강조
+
+오케스트레이션 엔진
+
+재사용으로 인한 서비스 간 의존성 높아짐
+
+사실상 실패 아키텍처
+
+<img width="763" alt="image" src="https://github.com/user-attachments/assets/a1413059-136f-491e-b55f-fb5c45b823f1">
+
+
+### 마이크로 서비스 기반 아키텍처 스타일
+
+분산 아키텍처, 성능은 그닥, 세분도가 중요.
+
+데이터 격리, 재사용보다 중복, 프로토콜 인지 이종간 상호 운용성
+
+API 레이어(API gateway), 고도의 디커플링 추구
+
+API 레이어는 가볍게, 비즈니스 로직이 X
+
+<img width="854" alt="image" src="https://github.com/user-attachments/assets/b26f5f39-23fd-4419-b682-f34dde86fa92">
+
+### 정리
+
+아키텍처를 결정하기 전에 비즈니스의 요구사항을 잘 알아야함.
+
+ex) 데이터의 즉시 일관성이 필요? 그럼 이벤트 기반 아키텍처는 힘듬.
+
+도메인, 데이터 아키텍처, 조직역량, 개발 프로세스등
+
+애자일 프로세스 역량이 없는데 최신기술? ㄴㄴ
+
+소프트웨어 아키텍처의 모든 것은 트레이드 오프
+
+어떻게 보다 '왜'가 더 중요하다.
 
 
 
