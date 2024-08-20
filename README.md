@@ -490,7 +490,73 @@ ex) 데이터의 즉시 일관성이 필요? 그럼 이벤트 기반 아키텍�
 어떻게 보다 '왜'가 더 중요하다.
 
 
+# 마이크로서비스 아키텍처 구성요소
 
+## MSA 패턴 유형
+
+MSA는 여러 개의 서비스간의 연계를 통해 시스템을 구축하는 SOA의 범주에 있다.
+
+SOA(service-oriented architecture)는 서비스 인터페이스를 통해 소프트웨어 구성 요소의 재사용과 상호 운용성을 가능하게 하는 방법을 정의합니다. 
+
+서비스는 공통 인터페이스 표준과 아키텍처 패턴을 사용하므로 새로운 애플리케이션에 신속하게 통합될 수 있습니다. 
+
+이로써 애플리케이션 개발자는 기존의 기능을 재개발 또는 복제하거나 기존의 기능을 연결하거나 상호 운용성을 제공하는 방법을 알아야 했던 수고를 덜 수 있습니다.
+
+* innner architecture : 개발자가 흔히 개발하는 인스턴스 안에 들어가는 비즈니스 아키텍처
+
+* outer architecture : 서비스(인스턴스)가 효과적인 운영 관리 지원을 위한 것
+
+<img width="683" alt="image" src="https://github.com/user-attachments/assets/47ea2087-0689-4ec5-9a42-9fceb56bff13">
+
+## MSA 패턴
+
+<img width="1076" alt="image" src="https://github.com/user-attachments/assets/65887ef2-7994-4bb7-a35d-773bc857f40d">
+
+***MSA를 돕든 제품들이 왜 필요한가? 이렇게 접근해야함.***
+
+그 전에도 말했듯이 최신? 잘 쓰니까? 이게 아니라 왜 쓰는가?
+
+MSA의 패턴을 이해하는 것이 중요
+
+
+## MSA 구성요소
+
+<img width="1030" alt="image" src="https://github.com/user-attachments/assets/5976018e-2207-46fa-8da7-1cf10062e0e7">
+
+## 구조화
+
+<img width="1081" alt="image" src="https://github.com/user-attachments/assets/8b7edd9b-a1a4-4055-b0a0-8c6af2a4f724">
+
+
+### 인프라와 플랫폼에 관련된 패턴 이해
+
+코드 개발
+
+코드 저장(repo) : git
+
+// 여기까지 CI
+
+build automation (image store에 저장(도커)
+
+deploy automation(도커의 이미지를 환경설정(config store)에 따라서 배포)
+
+container management platform(ex : 쿠버네티스, vm, 오케스트레이션 컨테이너)이 배포된 이미지를 backing service에 맞게 운영
+
+// 여기까지 CD
+
+라우터 : 웹, 모바일 등 클라이언트가 서비스를 찾아 가기 위해 찾아주는 것
+
+서비스 디스커버리 : 컨테이너 IP와 서비스 이름 찾는것. DNS같은
+
+로드 밸런싱 : 어떤 컨테이너로 보낼것인가
+
+인증/인가
+
+모니터링 : 로그
+
+diagnostics : 추적, tracing, 서킷브레이크
+
+# 인프라
 
 
 
