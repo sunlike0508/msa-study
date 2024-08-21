@@ -558,6 +558,313 @@ diagnostics : 추적, tracing, 서킷브레이크
 
 # 인프라
 
+## 인프라 패턴
+
+build automation : CI(지속적 통합), 도커, 젠킨스, 깃헙
+
+deploy auto : CD(지속적 배포), AWS ECR, 도커허브, HARBOR
+
+위에 제품들은 각 패턴유형의 대표 제품들
+
+### 인프라에 관련된 패턴 이해
+
+보통 클라우드 or DevOps 인프라 패턴
+
+• 인프라플랫폼(IaaS) : AWS EC, Azure VMs , OpenStack
+• 컨테이너플랫폼(CaaS): AWS ECS,EKS,AKS,GKE , k8s, DC/OS, Docker Datacenter
+• 어플리케이션플랫폼(PaaS,aPaaS): Heroku,PCF,CloudFondy,OpenShift
+• 함수플랫폼(FaaS) : Lambda,Azure Functions,GCF, OpenWhik
+• 소프트웨어플랫폼(SaaS): Saleforce,Oracle,SAP,OpenFaaS,fission,Knative
+
+<img width="1091" alt="image" src="https://github.com/user-attachments/assets/63da561f-c202-4181-9ba6-59399a6c5a1c">
+
+구글 docs처럼 구글의 대표적인 제품들이 SaaS의 예시
+
+
+## VM vs 컨테이너
+
+### vm (가상 머신)
+
+게스트 OS 관리 오버헤드, virtualbox, vmware
+
+가상머신의 하이퍼바이저 위에 각 vm이 있고 vm은 각 게스트 os를 가지고 있는데 이때 게스트 os가 커널.
+
+커널의 단점은 많은 라이브러리를 가지고 있어서 무겁다.
+
+그래서 배포, 부팅 속도가 느림.
+
+### 컨테이너
+
+컨테이너 런타임 : OpenVZ, Docker가 사실상 표준
+
+개발과 배포가 편해짐, 독립된 개발 환경 보장
+
+개발/운영 환경의 통합 : 개발 환경 그대로 다른 서버에 똑같이 복제 가능
+
+커널을 포함하지 않으므로 이미지가 크지 않고, 배포속도가 빠름
+
+애플리케이션의 독립성과 확장성이 높아짐 : 마이크로 서비스
+
+Stateless, 불변성
+
+컨테이너는 하이퍼바이저가 아닌 컨테이너 런타임이 있는데 vm의 게스트 os(커널)를 공통으로 가지고(공유) 있기 때문에 빠르다.
+
+애플리케이션 구동을 위한 라이브러리 & 실행파일을 가지고 있음.
+
+<img width="1153" alt="image" src="https://github.com/user-attachments/assets/b4a6575a-3184-4464-8d66-adaf669752e5">
+
+## 도커
+
+도커엔진
+
+도커이미지 : 컨테이너 생성시 필요한 요소, 여러개의 계층으로 된 바이너리 파일, 읽기 전용
+
+이미지 저장소
+
+도커컨테이너 : 도커이미지로 생성, 격리된 시스템 자원 및 네트워크를 사용할 수 있는 독립된 공간 생성
+
+기본명령어
+
+• Docker run –I –t ubuntu:14.04
+ 
+실행 동작
+
+이미지를 도커허브에 넣어놓고 우분투가 도커허브에 이미지를 가져와서 도커(컨테이너)에 실행
+
+#### 수동작업
+
+<img width="1060" alt="image" src="https://github.com/user-attachments/assets/b169034d-ba6c-428c-9c47-11146d6d4595">
+
+#### 자동
+
+Dockerfile로 이미지 생성 자동화
+
+• 빌드 명령어 제공, 컨테이너에 설치해야 할 패키지,추가해야 할 소스코드 ,실행해야 할 명령어,쉘 스크립트등을 하나의 파일에
+기록 , 도커엔진이 읽어들어 이미지 생성
+• 쉽게 배포 가능
+
+<img width="890" alt="image" src="https://github.com/user-attachments/assets/265b30e8-7083-4474-9c0c-ef4a05168b73">
+
+### 컨테이너 라이브 사이클
+
+도커파일로 빌드하면 이미지가 생기고 이거를 도커허브에 저장.
+
+나중에 컨테이너를 생성하면 도커허브에 이미지를 가져와 commit 실행.
+
+<img width="1096" alt="image" src="https://github.com/user-attachments/assets/c33aab9b-5eed-44eb-a4d7-01438c8ce52c">
+
+### 도커 컨테이너
+
+빌드 컨텍스트 : 이미지를 생성하는데 필요한 각종 파일, 소스코드, 메타 데이터를 담고 있는 디렉토리
+
+기반이미지 위에 레이어, 그 위에 레이어, 그 위에 레이어 계속 쌓아감.
+
+절차적이 아닌 선언적 방식으로 되어 있다.
+
+어떻게 할것이 아닌 무엇을 할것인가?
+
+### 컨테이너 오케스트레이션
+
+하나의 호스트 머신에서 도커엔진으로 구동하다가 cpu, 메모리, 디스크용량과 같은 자원이 부족하면 어떻게 할것인가?
+
+-> 서버 클러스팅으로 자원을 병렬로 확장
+
+새로운 서버, 컨테이너가 추가 됐을 때 discovery 하는 일
+
+스케쥴링 : 어떤 서버에 컨테이너를 할당할 것인가
+
+부하분산(로드밸런서)
+
+장애복구 : 서버가 다운되었을 때, 고 가용성 보장
+
+#### 해결
+
+위에 것들을 해결하기 위해 나온 제품이 바로 k8s(쿠버네티스), MESOS, Docker Swarm
+
+컨테이너 배포, 스케일링, 로드밸런싱, 네트워킹 자동화
+
+애플리케이션 레벨의 서비스를 제공하지는 않음
+
+(미들웨어, 데이터처리, 데이터 스토리지)
+
+로깅, 모니터링, 경보는 포함 되지 않음
+
+보통 매니저 노드가 있고 그 아래 여러 워커 노드를 포함하도록 구성되어 있음.
+
+서비스 : 같은 이미지에서 생성된 컨테이너 집합, 생성된 컨테이너를 레플리카라 함.
+
+매니저노드가 워커노드 2개를 가지고 있엇다.
+
+그때 하나가 죽음 다른 워커노드 안에 2개의 컨테이너를 만듬.
+
+이때 2개의 집합을 레플리카
+
+replica = 2
+
+컨테이너들을 관리, 즉 자동 스케쥴링, 자동 확장, 자동 배포등을 하는 것의 대표주자가 쿠버네티스
+
+## 쿠버네티스
+
+• Kubernetes àk8s
+• Automatic bin packing
+• Self-Healing
+• Horizontal scaling
+• Service discovery and Load balancing
+• Automated rollouts and rollbacks
+• Secret and Configuration management
+• Storage orchestration
+• 모든리소스는오브젝트형태로관리
+• 명령어보다는YAML
+• Pod, Replicaset, Service,
+• Deployment, Configmap,secret,
+• Ingress
+
+<img width="818" alt="image" src="https://github.com/user-attachments/assets/fe04f7d7-f4a2-482d-9e63-875c5b5fc7f5">
+
+service discovery : 한가한 워커노드의 컨테이너를 찾은 기능
+
+무중단 배포 관리
+
+<img width="1103" alt="image" src="https://github.com/user-attachments/assets/8900cc96-ffdc-4bf4-af82-963585fe4130">
+
+애플리케이션이 올라가는 컨테이너를 만드는게 도커
+
+이 도커를 관리 해주는 쿠버네티스
+
+### Pod
+
+Pod : 컨테이너를 다루는 기본단위
+
+컨테이너 = pod
+
+1개 이상의 컨테이너로 구성
+
+하나의 완전한 애플리케이션으로 동작
+
+Pod 안에 Ngix컨테이너(우리가 흔히 개발하는 것), 사이드카(인증/인가, 로깅 같은거) 이렇게 있음
+
+그냥 pod는 하나의 컨테이너다라고 인식하고 가도 됌
+
+
+### 레플리카셋(replicaset)
+
+<img width="1305" alt="image" src="https://github.com/user-attachments/assets/8bf59043-5361-4064-9f98-155a633dcc7c">
+
+
+정해진 수의 동일한 포드가 항상 실행되도록 관리
+
+노드 장애 등의 이유로 포드가 사용할 수 없다면 다른 노드에서 포드 다시 생성
+
+replica= 3로 선언했으니 pod를 3개 만듬
+
+이런거를 보통 yaml으로 선언적 작성.
+
+pod, replica 각각 선언할수있는데 이거를 한꺼번에 선언하는 것이 deployment
+
+service(clusterIP) : 알아서 라우팅, 로드밸런싱 해줌.
+
+ingress : 서비스를 OSI 계층에서 로드밸런싱 해주는것. url기반으로
+
+### deployment
+
+<img width="1248" alt="image" src="https://github.com/user-attachments/assets/733417b9-548b-4b35-a824-d97a9b9b6b73">
+
+
+Pod set, ReplicaSet을 한번에 = deployment
+
+업데이트 배포를 더욱 편하게 함.
+
+애플리케이션 변경시 레플리카셋의 변경사항을 저장하는 리비전을 남겨 롤백 가능
+
+무중단 서비스를 위해 롤링 업데이트 전략 지정 가능
+
+### Service
+
+포드를 연결하고 외부에 노출
+
+여러 개의 포드에 쉽게 접근할 수 있도록 고유한 도메인 이를 부여,
+
+여러 개의 포드에 접근 할때 요청을 분산하는 로드밸런서 수행
+
+clusterIP(보통 이거 씀), NodePort(어플리케이션 포트랑 머신포트랑 연결하는것, 물리적 포트, 노드의 port를 열어 외부에서 접속하도록), LoadBalancer
+
+4개의 레플리카를 설정하고 실행. (nodeport를 30080으로 설정)
+
+이때 스케일 아웃후 로드밸런싱 잘되는 지
+
+확인(kubectl get deployment)하면
+
+랜덤으로 Pod에 붙는 것을(curl host01:30080)
+
+확인할 수 있다.
+
+후에 하나의 pod를 죽이면
+
+(kubectl delete pod podName(pod이름))
+
+알아서 신규Pod를 만든다.
+
+yaml로 레플리카set를 설정할수있고
+
+혹은 명령어로 가능
+
+kubectl scale --replicas=5 deployment/webapp1
+
+명령어가 쿠버네티스 마스터안에 있는 etcd라는 곳에 저장됌
+
+그러시면 마스터안에 컨트롤러메니저가 etcd를 주시하고 있다가 자동으로 스케일링해줌.
+
+### ingress
+
+url 기반으로 로드밸런싱
+
+ssl 보안 연결
+
+인그레스 규칙
+
+인그레스 컨트롤러 서버, Nginx 웹서버 인그레스 컨트롤러
+
+### Configmap(설정값)
+
+컨테이너는 수정할 필요가 없다(상태를 가질 필요가 없다). 즉, 불변성. 이미지로 관리하니까 개발이나 운영이나 같은 환경으로 사용.
+
+이때 이미지는 개발이나 운영이나 똑같이 배포하는 것은 좋은데 db는 다르게 해야 하잖아.
+
+이런 가변적인요소(db 저장소)들을 컨테이너 관리와 다르게 컨테이너에서 필요한 환경 설정을 관리하는 것을 config pattern이라고 한다.
+
+이것을 쿠버네티스에서는 컨피그맵, 시크릿 같은 것이다.
+
+컨피그맵은 db, 이미지 같은거
+
+시크릿(암호화 기능)은 보안쪽에 치중되어 있음.
+
+그래서 key, value 형식으로 저장되어 있음
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
