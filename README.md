@@ -1,5 +1,4 @@
-<img width="1075" alt="image" src="https://github.com/user-attachments/assets/d708cb73-49fb-4638-927a-004a8db3df1b"># msa-study
-
+# msa-study
 
 인프라가 가변적으로 쉽게 변경되는 클라우드 환경
 
@@ -1530,7 +1529,7 @@ ACID 적용의 어려움을 극복하기 위한 패턴
 
 값이 아닌 트랜잭션을 저장하는 방식으로 동시성(Concurrency) 문제를 해결할 수 있음.
 
-![Uploading image.png…]()
+<img width="1075" alt="image" src="https://github.com/user-attachments/assets/d708cb73-49fb-4638-927a-004a8db3df1b">
 
 
 이벤트가 발생할때마다 스냅샷을 계속 발생. CQRS의 라고도 보일수있다. 솔직히 여기까진 필요없다.
