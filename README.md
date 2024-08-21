@@ -1,4 +1,4 @@
-# msa-study
+<img width="1075" alt="image" src="https://github.com/user-attachments/assets/d708cb73-49fb-4638-927a-004a8db3df1b"># msa-study
 
 
 인프라가 가변적으로 쉽게 변경되는 클라우드 환경
@@ -1478,7 +1478,7 @@ ACID 적용의 어려움을 극복하기 위한 패턴
 
  * Sage 패턴 두 가지
 
-1) 코레오그래피
+ 1) 코레오그래피
     * 서로 서비스별 트랜잭션 판단해서 COMMIT 결정
     * 이벤트 기반 아키텍처의 브로커패턴
     * 보상 트랜잭션 : 주문을 생성한 트랜잭션이 끝나고 고객에서 그 주문은 안돼라고 말하면 주문을 생성한 트랜잭션을 롤백해주는 것.
@@ -1488,7 +1488,7 @@ ACID 적용의 어려움을 극복하기 위한 패턴
   <img width="1303" alt="image" src="https://github.com/user-attachments/assets/a426c1f6-6efa-4e96-b397-8121a87fea1c">
 
   
-2) 오케스레이터
+ 2) 오케스레이터
 
     * 이벤트 기반 아키텍처의 중재자 패턴
     * 중재자는 트랜잭션을 구성하는 파트를 하나씩 호출하여 성공/실패 여부를 기록 그 결과에 따른 흐름 조정
@@ -1520,12 +1520,22 @@ ACID 적용의 어려움을 극복하기 위한 패턴
 2) CQRS 패턴
  * 명령 조회 책임 분리
 
+<img width="1075" alt="image" src="https://github.com/user-attachments/assets/1f2e0284-0420-47a8-b2a8-b8dca5250738">
+
+
 
 3) 이벤트 소싱 패턴
 
 상태가 아닌 트랜잭션 자체를 저장하는 전략, 쓰기 최적화
 
 값이 아닌 트랜잭션을 저장하는 방식으로 동시성(Concurrency) 문제를 해결할 수 있음.
+
+![Uploading image.png…]()
+
+
+이벤트가 발생할때마다 스냅샷을 계속 발생. CQRS의 라고도 보일수있다. 솔직히 여기까진 필요없다.
+
+
 
 
 
