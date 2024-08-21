@@ -840,10 +840,652 @@ ssl 보안 연결
 
 그래서 key, value 형식으로 저장되어 있음
 
+# DevOps 인프라(CI/CD)
+
+인프라 패턴의 클라우드 패턴
+
+이때 VM하고 컨테이너 차이점
+
+컨테이너 대표적인게 도커
+
+컨테이너가 여러 노드에 올라가기 위한 자동화 배포를 위한 관리를 오케스트레이션이 필요
+
+이거의 대표적인게 쿠버네티스
+
+이 클라우드 인프라 패턴을 배포하는 패턴을 CI / CD
+
+빌드 : 컴파일, 테스트, 정적 분석 수행
+
+배포 : 개발된 어플리케이션을 개발/테스트/스테이징/운영에 배포
+
+수동배포 : 오류발생 높음, 시간 오래 걸림, 환경에 따른 영향이 미침
+
+CI/CD 애자일 프렉티스에서 유래.
+
+자동으로 통합하고 테스트하고 레포트로 남기는 활동 = CI
+
+실행환경에 자동으로 배포하는 것 = CD
  
+인텔리제이 -> 깃헙 -> 젠킨스 -> 도커 // 여기까지 형상관리 CI -> AWS ECR -> Amazon EKS // CD
+
+이런거를 파이프라인 설계
+
+컴파일, 테스틍, 정적분석, 패키징, 컨테이너 이미지 생성, 배포환경 구성, 배포 이거를 각 단게별 구성
+
+마이크로서비스를 위한 파이프 라인은 독립적 배포를 지원해야 함.
+
+대표적인게 젠킨스 : 가시적 통보, 다양한 플러그인
+
+<img width="1211" alt="image" src="https://github.com/user-attachments/assets/250c93aa-efe7-4ac7-97d0-df07d3f5d192">
+
+## 배포전략
+
+배포의 전략 3가지
+
+서비즈 중단 없이 새로운 버전 배포하기
+
+1) 롤링 업데이트
+
+컨테이너 이미지를 새버전으로 하나씩 교체
+
+2) canary 카나리
+
+새로운 배포 버전과 현행버전을 운영 환경에서 동시에 검증
+
+롤링과 블루그린 중간 사이
+
+신규버전 구버전 트래픽 비중을 줄수 있다.
+
+3) blue / green
+
+완전하게 준비된 상황에서 서비스 교체
+
+높은 오버헤드와 서비스 장애 최소화 간 조율
+
+<img width="1363" alt="image" src="https://github.com/user-attachments/assets/26418901-9feb-42c4-be8a-6edf3709b025">
 
 
+# CSP
 
+ Cloud Service Provider의 약자로, 클라우드 서비스를 제공하는 업체
+
+위에 개념만 알면 어느 제공자를 선택하든 다 기능을 가져다 쓰면 된다.
+
+클라우드 서비스 프로바이져( CSP) : aws, azure, GCP
+
+클라우드 서비스 제공업체
+
+가상 네트워크, 스토리지, 컨테이너, 서버 서비스
+
+다양한 backing 서비스들
+
+devops 서비스 (빌드/배포),
+
+모니터링, 추적, 로깅
+
+### 다양한 기
+
+<img width="968" alt="image" src="https://github.com/user-attachments/assets/ca3e5186-27c8-453d-ad3b-23dcce7652eb">
+
+Virutal Servers : Instances
+
+PaaS(platform as a service) : 어플리케이션 그냥 던지면 알아서 구동. AWS에서는 Elastic Beanstalk라는 도구 제공
+
+Serverless Computing : Lamda
+
+도커기반 PaaS : AWS의 ECS
+
+쿠버네티스 관리 : AWS의 EKS
+
+object storage : AWS의 S3
+
+Archive Storage(S3 장기간 보관) : Glacier
+
+File storage : EFS
+
+Global Content Delievery(CDN : 정적 이미지 ) : CloudFront
+
+Managed Data WareHouse : RedShift
+
+# MSA생태계의 발전과 패턴의 탄생
+
+관리, 운영 플랫폼 패턴의 이해
+
+모노리스 -> 모듈형 모노리스 -> 마이크로서비스 -> 분산 트랜잭션(각각의 데이터 저장소 가짐)
+
+연쇄적인 장애가 생김
+
+마이크로서비스 운용시 생겨난 문제를 해결하기 위해 넷플릭스가 OSS를 만듬
+
+그게 리본, 휴스티릭스, 유레카 등. 테크 블로그에 오픈함.
+
+1999년 지속적인 통합 방법론
+
+2001년 애자일 선언
+
+2006 AWS EC2
+
+2009년 데브옵스
+
+2010년 스프링 부트
+
+2013년에 도커 컨테이너
+
+2014년 마이크로서비스 정의 (fowler, lewis)
+
+2014년 쿠버네티스
+
+## Spring Cloud , BFF, API GW
+
+넷플릭스에 대항한 스프링진영에서 만든건 spring cloud 아키텍처
+
+여기서 BFF, API GW, Router, 로드밸런싱, 인증/인가, 중앙화된 로깅, metric, 추적등을 소스로 관리하는게 spring cloud
+
+<img width="1370" alt="image" src="https://github.com/user-attachments/assets/735b6e69-f312-404d-81b8-6305b0a1d662">
+
+### BFF(BackEnd for FrontEnd)
+
+넷플릭스 채널(모바일, 컴퓨터, tv등)
+
+채널에 따른 다양한 API 조합
+
+API 게이트웨이를 하나로 두지 않고 프런트앤드 유형에 따라 다른 API 조합을 위해 두는 패턴
+
+다양한 채널이 있다면 고려해볼만하다.
+
+### API Gateway
+
+다양한 클라이언트가 개별 서비스에 엑세스하기 위해서는 단일 진입점을 만들어 놓으면 여러모로 효율적
+
+여기에 비즈니스 로직을 넣으면 안된다.
+
+그러나 라우팅, 로드밸런싱, 인증/인가, 추적, 장애격리, 서비스 탐색등은 들어간다.
+
+예를 들어 상품서비스가 리뷰서비스를 호출할때 direct가 아닌 api 게이트웨이를 통해서 호출하기 때문에 추적, 장애 등의 기능이 들어간다.
+
+일정 시간 동안 서비스 요청에 대한 반응이 없으면 기존 요청 경로를 차단하고 다른 경로로 요청 경로를 변경하는 기능을 가진다. ==>>> 서킷 브레이커
+
+### 라우팅, 로드밸런싱, 서비스 탐색
+
+API 게이트웨이에서도 로드밸런싱 할수 있지만 패턴 측면에서 살펴보자.
+
+서비스가 올라가는 컨테이너의 IP정보가 고정되어 있지 않기 때문에 이런 서비스 이름과 IP정보를 매핑하여 보관할 저장소가 필요.
+
+처음 서비스가 등록될 때 위치정보가 저장.
+
+서비스가 종료되면 같이 삭제
+
+#### 라우터
+
+어떤 서비스를 찾아갈지 찾아주는 (ex: Zuul)
+
+#### 로드밸런싱
+
+해당 서비스의 어떤 인스턴스를 찾아갈지 찾아주는 (ex : Ribbon)
+
+서비스가 올라가는 컨테이너의 IP정보가 고정되어 있지 않기 때문에 이런 서비스 이름과 IP 정보를 매핑하여 보관할 저장소가 필요
+
+#### 서비스 탐색(Service discovery)
+
+여러 서비스 인스턴스 생성시 새로 생성된 인스턴스의 발견과 없어진 서비스 감지
+
+레지스터리서비스가 DNS역할, 따라서 서비스 이름으로 접근
+
+라우터가 서비스이름을 찾아서 IP로 접근
+
+서비스 인스턴스 A 10.1.1.1:1000
+
+서비스 인스턴스 C-1 10.1.1.2:2000
+
+서비스 인스턴스 C-2 10.1.1.3:3000
+
+이런 이름, IP주소, port정보를 라우팅 서비스가 활용
+
+ex) spring eureka
+
+
+### 정리
+
+위에 꺼를 다 해서 pod로도 만들수 있음
+
+라우팅, 로드밸런싱 -> 서비스라고 하는 오브젝트가 해줌.
+
+그래서 이 패틴이 서비스 탐색, 라우팅, 로드밸런싱을 소프트웨어적으로 구현 안하고 쿠버네티스를 바로 적용하면 기본으로 된다.
+
+정리하면 스프링 클라우드 gateway를 가지고 하든 쿠버네티스로 하든 라우팅, 로드밸런싱, 서비스탐색 이걸 관리해라.
+
+# 인증/인가
+
+인증 : 너는 누구니?
+
+인가 : 너는 무슨 권한이 있니?
+
+## 개발 단계
+
+1) 각 서비스에 인증, 인가 서비스 두기
+
+중복, 도메인에 집중하기 힘듬
+
+2) 별도의 서비스를 둠
+
+latency가 증가, 인증은 해결되나 인가는 각 서비스가 비즈니스에 따라 해결해야함)
+
+3) API Gateway에서 인증/인가가 통합된 토큰 발행하자.
+
+각 비즈니스 서비스에서 최종 리소스 허용 판단
+
+#### Stateful
+
+세션 사용.세션을 redis에 저장하고 관리, 서비스가 각각 관리하지 않고 별도 통합 세션 storage를 사용하는 방식
+
+Redis-session Pattern
+
+#### Stateless
+
+JWT, RFC-7519
+
+수신자가 발신자 신원을 확인 할 수 있도록 한 서명된 Json객체
+
+근데 Stateful 이나 Stateless나 BFF에서 처리하는 방식임
+
+## Auth
+
+API G/W서비스가 Auth 기능 포함할 수도 있음
+
+<img width="1270" alt="image" src="https://github.com/user-attachments/assets/6f37b395-28de-4faf-ab4b-3c5fb5edd614">
+
+
+# Config Management
+
+<img width="1136" alt="image" src="https://github.com/user-attachments/assets/88cabc87-a26d-410d-934b-4c6deb81b398">
+
+
+## Config
+
+종속성을 없애기 위한 External Configuration 패턴
+
+12 factors 설정 원칙(클라우드에서 돌아갈 어플리케이션은 하드웨어나 컨테이너에 종속된 정보를 가지고 있으면 안된다는 원칙)
+
+## Spring cloud Config
+
+설정파일 변경에 따라 별로 빌드/배포 필요없음
+
+쿠버네티스의 ConfigMap, Secret에서도 할 수 있음
+
+플랫폼이 변경되었을때 쉽게 이동하기 힘듦. 따라서 코드에서 사용하는 환경 설정 정보는 코드와 완전히 분리되어 관리
+
+### K8s – ConfigMap, Secret
+
+비밀번호를 Secret에 관리할 수 있도록 하였고, Secret의 값은 각 컨테이너에 환경변수로 주입된다
+
+<img width="1345" alt="image" src="https://github.com/user-attachments/assets/bb0e8c2f-4083-438e-a5e2-f98c4673be05">
+
+# 중앙화된 로깅, 추적 ,매트릭, 서킷브레이크
+
+중앙화된 metric, 중앙화된 로깅, 분산 추적
+
+중앙화된 로깅
+
+로컬 로깅 X, 중앙 집중형 로깅
+
+중앙 로깅
+
+Log aggregation, Exception tracking
+
+ElasticSearch : 분산현 검색, 분석 엔진 (정형, 비정형, 위치정보, 메트릭 등 원하는 방법으로 검색을 수행)
+
+Logstash : 로그 집합기 (데이터 처리 파아프라인)
+
+Kibana : 시각화 (히스토그램, 막대 그래프, 차트 등)
+
+<img width="1010" alt="image" src="https://github.com/user-attachments/assets/860b4270-c2cc-4902-958f-8fe61fbe6a71">
+
+로그스태시가 수집해서 elastic에 보내서 인덱싱하고 키바나가 이걸 시각화.
+
+
+## 추적
+
+Zipkin(넷플릭스, 트위터에서 제공), Spring Cloud sleuth, Jaeger(우버에서 제공)
+
+Spring Cloud Sleuth(zipkin client library)
+
+traceID(추적), Span ID (구간) 부여
+
+<img width="942" alt="image" src="https://github.com/user-attachments/assets/9489c81b-6c4c-4d83-9985-bf60a4e63849">
+
+
+## 서킷 브레이크 패턴
+
+장애격리 : 상황에 따라 서비스를 동적으로 증가시켜 과부하나 오류 상황에서도 지속 가능한 서비스가 가능하도록 관리
+
+-> 실시간으로 관리되어 시각화하고 모니터링
+
+<img width="671" alt="image" src="https://github.com/user-attachments/assets/d20193c6-058d-485e-a06b-f49edad5a41e">
+
+연속 실패 횟수가 임계값을 초과하면 회로 차단기가 작동
+
+시간초과 기간 동안 원격 서비스를 호출하려는 모든 시도가 즉시 실패 됌.
+
+Spring cloud Circuit Breakers와
+
+Netflix Hystrix 또는 Resilience4j 이렇게 요즘 조합한다.
+
+코드로 구현하는 방법도 있지만 너무 노가다, 요즘에 플랫폼(프로바이저: aws)에서 제공하는 도구(서비스)들이 있다
+
+## 중앙화된 메트릭(모니터링)
+
+쿠버네티스 + 프로메테우스 + grafana -> 이 조합을 많이 쓴다.
+
+Springboot(actuator) + 프로메테우스 + 그라파나
+
+쿠버네티스가 모니터링한 내용을 저장
+
+프로메테우스가 이걸 주시하고 있다가 인덱싱해서
+
+그라파나에 전달 그럼 그라파나는 이걸 시각화(대시보드)
+
+혹은 슬랙이나 웹훅으로 보내줌
+
+<img width="1316" alt="image" src="https://github.com/user-attachments/assets/73004e31-a7e1-4dcb-b427-5e73adb06ed2">
+
+## 서비스 메시
+
+서비스 매쉬(mesh)
+
+outer 아키텍처 패턴 적용에 따른 문제
+
+서비스, 인스턴스 증가로 통신이 증가
+
+단일 어플리케이션에서 플랫폼으로 변화.
+
+<img width="1301" alt="image" src="https://github.com/user-attachments/assets/fa735a93-f9a2-4650-b5cf-e1fd4d64c810">
+
+여기서 Istio가 서비스 Mesh
+
+애플리케이션 기반, 프록시 기반
+
+사이드카 패턴
+
+<img width="1084" alt="image" src="https://github.com/user-attachments/assets/dfefbc4a-a9d2-410f-b452-3cc3ff3b153f">
+
+왼쪽처럼 되어 있던 것을 오른쪽으로 변경 오른쪽의 컨테이너를 여러개 배포하면
+
+<img width="1220" alt="image" src="https://github.com/user-attachments/assets/72c5cf67-b570-4cf2-a4c8-59f93dbb332e">
+
+이렇게 된다. (녹색이 비즈니스, 파란색이 sidecar proxy)
+
+이걸 서비스 메시 아키텍처라고 함.
+
+쿠버네티스에서는 서비스 메시 컨트롤 plane을 두고 관리
+
+즉, 서비스 로직과 통신의 분리.
+
+서비스탐색, 로드밸런싱, 라우팅, 서킷브레이커, 분산추적, 메트릭(로그)수집등을 처리한다.
+
+사이드카 패턴 적용
+
+기본 애플리케이션 외 필요한 추가 기능을 별도의 애플리케이션으로 구현하고 이를 동일한 프로세스 또는 컨테이너 내부에 배치
+
+이거의 구현체가 대표적으로 Istio (구글, IBM, Lyft가 함께 참여한 오픈소스)
+
+<img width="749" alt="image" src="https://github.com/user-attachments/assets/4e2b6253-153c-4f1c-8217-a24f980960d5">
+
+envoy를 기본 proxy로 사용
+
+쿠버네티스를 기본으로 지원
+
+#### 각 서비스에서 제공하는 기능들
+
+맨 왼쪽이 MSA의 패턴들
+
+<img width="1363" alt="image" src="https://github.com/user-attachments/assets/48e9c81e-89ce-47e7-88a3-9d2c49b86019">
+
+# Application Modernization유형과 클라우드 전환 프로세스
+
+마이크로서비스가 아닌 클라우드 아키텍처 적용만으로도 충분한 경우가 많음
+
+Application Modernization
+
+<img width="840" alt="image" src="https://github.com/user-attachments/assets/da94f86b-ca06-4756-9f46-011b586d72ef">
+
+굳이 인스턴스를 여러개 쪼개지 않아도 플랫폼, 인프라에서 클라우드 아키텍처만 적용해도 충분한 경우가 많음
+
+CSP(AWS, Azure, GCP) laaS, PaaS, 쿠버네티스 적용이나
+
+DevOps Infra(CI/CD) 도입만 해도 이걸 어플리케이션 모던화라고 부름
+
+Pivotal(vmware Tanzu)이 제시하는 어플리케이션 모던화 유형 /수준
+
+1) Cloud Ready :
+
+app에서 파일 시스템 제거, 혹은 오브젝트 스토리지 도입
+
+독립 실행형 어플리케이션 준비
+
+플랫폼이 관리하는 backing 서비스
+
+2) Cloud Friendly
+
+12 factor 고려, 수평적 확장이 가능한 구조, 플랫폼 차원에서 HA 구조를 지원
+
+3) Cloud Resilient
+
+장애를 고려한 IT 디자인
+
+적극 장애 테스트
+
+모니터링, 메트릭을 중앙화
+
+퍼블릭, 프라이빗 클라우드 스케일 전략
+
+4) Cloud Native
+
+마이크로 서비스 구조 사용 원칙 준수
+
+API 기반 아키텍처
+
+## AWS 래퍼런스
+
+<img width="1330" alt="image" src="https://github.com/user-attachments/assets/adddc1db-cee3-4653-9e24-1f3809a82515">
+
+refactor : 마이크로서비스 만들어라
+
+rehost : vm 써라
+
+relocate : 컨테이너(도커) 써라
+
+replatform : aws에서 제공하는 서비스 사용해라
+
+<img width="1331" alt="image" src="https://github.com/user-attachments/assets/3d341b4e-3938-44cd-9b2f-e02cda9a0225">
+
+## Cloud Modernization 전환 전략
+
+<img width="1367" alt="image" src="https://github.com/user-attachments/assets/4ea4c7ae-9128-4422-928e-91c7e142ce34">
+
+각 단계별로 진행해라.
+
+보통 rearchitect까지만 하는것이 보통이다.
+
+### Rehost
+
+아키텍처, 어플리케이션 변화없이 infra만 변경
+
+기존 레거시 vm과 data source를 그대로 Ec2 VM에 올림.
+
+### Refactor
+
+컨테이너화 DevOps infra구축
+
+수평확장이 가능하도록 어플리케이션 리팩토링
+
+세션공유처리, 내부파일 시스템 의존 제거, 서드 파트 솔루션 클라우드 지원 확인
+
+기존 어플리케이션의 컨테이너 수평확장이 중점.
+
+자동 빌드,배포-> 데브옵스 구축
+
+### Rearchitecutre(Replatform)
+
+프런트 앤드 분리(API 화)
+
+클라우드 backing 서비스 활용(클라우드 스토리지, 오브젝트 db, cloud db활용)
+
+장애 고려 모니터링, 매트릭 기반 서비스 활용
+
+### Rebuild
+
+어플리케이션 재개발 수준
+
+어플리케이션 기능별 서비스로 분리
+
+저장소 격리가 핵심.
+
+# 애플리케이션 패턴
+
+마이크로서비스
+
+프런트앤드, 백앤드 모두 조각으로 구성
+
+## 리액티브 선언
+
+<img width="849" alt="image" src="https://github.com/user-attachments/assets/bc0b9b97-ab40-4ee2-aec6-7c5454b71e4d">
+
+리액티브 선언
+
+리액티비 아키텍처 패턴
+
+응답성이냐 성능이냐
+
+탄력성, 응답성 (미래의 약속)
+
+유연성 : 요청 변화에 맞게 대응
+
+탄력성 : request 증감소에 따른 운영
+
+## 설계 동향
+
+<img width="697" alt="image" src="https://github.com/user-attachments/assets/c9bc2a09-4644-4e0e-97b0-421e6cdda59d">
+
+
+### ACID 일관성 모델
+
+원자성,일관성, 격리성, 영속
+
+트랜잭션이 종료되었을때, 데이터는 일관적이고 안정적이어야 한다. (RDB)
+
+READ, Write 모델이 모든 인스턴스(노드)가 가지고 있음
+
+### BASE 일관성 모델
+
+가용성, 소프트 상태 유지, 약간의 부정확성을 허용을 통한 빠른 대응(eventual consistency)
+
+key-value, document 데이터베이스
+
+read, write 전용 워커를 둠.
+
+
+## 마이크로 프런트엔드, 통신 패턴
+
+### 마이크로 프런트엔드
+
+<img width="1150" alt="image" src="https://github.com/user-attachments/assets/0eb1fe27-d3e5-40bd-af1e-8395f77e7a75">
+
+위처럼 잘게 쪼개져 잇기 때문에 빈번한 배포가 이루어짐.
+
+### 통신 패턴
+
+이벤트 주도 아키텍처
+
+REST API를 사용함으로써 발생되는 문제(동기)를 해결
+
+메시지를 보낸 다음 응답을 기다리지 않고 일을 처리
+
+메시지를 보내는 프로듀서
+
+메시지를 처리하는 컨슈머
+
+서로 직접 접속하지 않고 메시지 브로커에 연결
+
+#### 비동기 관련 문제
+
+에러처리
+
+탄력성과 응답성
+
+리액티브 아키텍처 패턴(워크플로 프로세스 패턴) : 메시지가 잘못되거나 실패하면 워크플로 프로세스가 그걸 조치(에러처리 하거나 수정)하고 메시지 보냄
+
+데이터 손실 처리 :
+
+1) 큐에 전달 안됌.전달 되어도 큐가 다운되는 경우.
+
+이 구간은 비동기가 아닌 동기로 처리.
+
+2) 메시지를 꺼내 처리 전에 장애 발생
+
+큐에서 메시지를 저장. 퍼시스턴트 큐 ex)카프카
+
+그리고 컨슈머가 가져갔다는 클라이언트 확인 응답모드를 이용
+
+3) 데이터 에러로 인해 메시지 저장 실패
+
+ACID 트랜잭션으로 처리하면 됌.
+
+db에 저장이 되었는지 확인후 메시지 삭제
+
+## 저장소 격리 패턴
+
+자신이 소유한 데이터는 다른 서비스에 절대 노출X
+
+반드시 API를 통한 접근
+
+### 문제점
+
+데이터 공유와 위임
+
+항공편 검색에 항공편 테이블의 소유권을 준다. 그러면
+
+항공편 추적, 예약은 또 다른 서비스로 분리 할 수 있음.
+
+ <img width="1058" alt="image" src="https://github.com/user-attachments/assets/93dd6f4e-aea9-4b3b-8391-f23d06246ecc">
+
+왼쪽은 안티패턴(안좋은 패턴). 미니 서비스
+
+### API조합
+
+각 서비스에 각 db를 접근하는 권한을 위임하여 서비스를 나눔
+
+그래서 위임한 최종 서비스에서 조합
+
+동기로 되어 있기 때문에 하나라도 죽으면 문제가 생김
+
+### CQRS
+
+이벤트기반
+
+조회 전문 서비스 하나가 있음. 각 서비스별로 db가 저장, 변경되면 조회 전문 서비스에 이벤트 핸들러로 비동기 전달.
+
+### 분산 트랜잭션 처리
+
+분산 트랜잭션 패턴
+
+ACID 적용의 어려움을 극복하기 위한 패턴
+
+1) Saga패턴
+
+서비스별 각각 로컬 트랜잭션을 생성
+
+트랜잭션 사이에 이벤트로 연결
+
+ * Sage 패턴 두 가지
+    1) 코레오그래피 : 서로 서비스별 트랜잭션 판단해서 COMMIT 결정
+     * 이벤트 기반 아키텍처의 브로커패턴
+     * 보상 트랜잭션 : 주문을 생성한 트랜잭션이 끝나고 고객에서 그 주문은 안돼라고 말하면 주문을 생성한 트랜잭션을 롤백해주는 것.
+  
+    2)  
+
+2) CQRS 패턴
+
+3) 이벤트 소싱 패턴
 
 
 
