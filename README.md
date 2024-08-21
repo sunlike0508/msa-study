@@ -1529,16 +1529,115 @@ ACID 적용의 어려움을 극복하기 위한 패턴
 
 값이 아닌 트랜잭션을 저장하는 방식으로 동시성(Concurrency) 문제를 해결할 수 있음.
 
-<img width="1075" alt="image" src="https://github.com/user-attachments/assets/d708cb73-49fb-4638-927a-004a8db3df1b">
-
+<img width="1017" alt="image" src="https://github.com/user-attachments/assets/1473b539-16e7-40a7-817c-9d259e1ccb7a">
 
 이벤트가 발생할때마다 스냅샷을 계속 발생. CQRS의 라고도 보일수있다. 솔직히 여기까진 필요없다.
 
+## 레이어드 아키텍처
+
+### MVC 오해
+
+MVC
+
+MVP presentaion
+
+MVVM veiw model
+
+MVC 아주 70년대 스몰토크 커뮤니티에서 유래, 웹 MVC ? 발전
+
+• 그러나 여전히 MVC는 프리젠테이션 레이어를 위한 패턴이며 비지니스레이어를 설명하기 위한 용도가 아님.
+
+• 국내에서 전자정부 프레임웍 아키텍처이 개념이 잘못 이해 되어 MVC패턴이 백엔드 아키텍처의 전부인 것처럼 오해되고 있음. 많은 잘못된 블로그 정보 존재
+
+• 즉 MVC라는 패턴 가지고는 전체 백엔드 애플리케이션 아키텍처를 전혀 표현, 이해 할 수 없다.
 
 
+국내 전자정부 프레임웤의 아키텍처가 MVC다? 아니다.
 
+프래젠테이션 레이어를 구현해주는 하나의 패턴일뿐
 
+보통의 백앤드 아키텍처라고 하면 프레젠, 비즈니스, 데이터(persistence), 인프까지 다 아우리는걸 말하는것
 
+SQL + 비즈니스 로직이 결합된 코드들이 많다.
+
+데이터 레이어에는 순수 CRUD만 있어야 한다.
+
+아무리 MSA를 한들 이것을 분리하지 않으면 의미가 없다.
+
+유연한 대처가 되지 않는다.
+
+### 계층
+
+프레젠테이션 : 화면표현, 전환처리
+
+비즈니스 : 비즈니스 개념, 규격, 흐름제어
+
+데이터 엑세스 : 데이터 처리(순수 CRUD)
+
+여기서 서로 열고 닫고 변형 가능.
+
+각 layer간 인터페이스 호출로 의존성 낮춤
+
+이때, 데이터 계층이 변경되었다고 비즈니스 계층에 영향을 주는 문제가 발생.
+
+이런 객체지향 원칙의 5가지 원칙중 (DIP)를 지키기 위해
+
+클린코드아키텍처가 나옴.
+
+### SOLID
+
+단일책임 : 한 클래스 하나의 책임
+
+개방폐쇄 : 확장은 ok, 변경은 no
+
+리스코프 : 서브 타입은 언제나 부모 타입으로 변경, 다형성
+
+인터페이스 분리 : 범용적인 인터페이스보다 여러 개의 인터페이스가 낫다.
+
+의존성의 역전 : 추상화에 의존해야지, 구체화에 의존하면 안된다
+
+### 헥사고날 아키텍처, 클린 아키텍처
+
+<img width="748" alt="image" src="https://github.com/user-attachments/assets/36658638-c2c9-4e97-a649-be505d545c2b">
+
+<img width="892" alt="image" src="https://github.com/user-attachments/assets/d15d2e56-a5a1-4dc2-8b6a-38248a1bd926">
+
+### 폴리그랏 아키텍처
+
+• 마이크로서비스 내부 구조는 도메인 성격, 마이크로서비스를 개발/운영 하는 조직에 따라 폴리그랏할 수 있다.
+
+<img width="1082" alt="image" src="https://github.com/user-attachments/assets/0ea4a738-532a-4b86-833c-d2f1b6b0c25c">
+
+### 클린 마이크로서비스 패키지 구조
+
+• 아키텍처가 코드구조로 표현되어야 함
+
+<img width="1060" alt="image" src="https://github.com/user-attachments/assets/fff82e0d-a954-46b2-a050-74fb9184ed46">
+
+### 헥사고널 아키텍처 적용
+
+<img width="1214" alt="image" src="https://github.com/user-attachments/assets/c572a8c8-d444-436c-822e-ff1ce2ce8361">
+
+# 애자일 개발 방법론 적용
+
+<img width="1342" alt="image" src="https://github.com/user-attachments/assets/d07e3633-ea46-4263-8fba-26aea9aff6fc">
+
+• 마이크로서비스을어떤기준으로분리할것인가?
+- Bounded Context, Ubiquitous Languag
+  
+• 서비스간은어떻게연계할것인가?
+- Context Mapping
+
+• 어떤이벤트에의해마이크로서비스는서로반응하는가?
+- Domain Event
+
+## 이벤트 스토밍
+
+마이크로서비스설계를위한 워크샵
+
+이해관계자모두참여
+
+***결론 : 바운디드 컨텍스트를 도출하는 것이 정말 어렵다.*** 
 
 
 
