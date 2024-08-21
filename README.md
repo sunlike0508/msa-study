@@ -1480,8 +1480,37 @@ ACID 적용의 어려움을 극복하기 위한 패턴
     1) 코레오그래피 : 서로 서비스별 트랜잭션 판단해서 COMMIT 결정
      * 이벤트 기반 아키텍처의 브로커패턴
      * 보상 트랜잭션 : 주문을 생성한 트랜잭션이 끝나고 고객에서 그 주문은 안돼라고 말하면 주문을 생성한 트랜잭션을 롤백해주는 것.
-  
-    2)  
+ 
+  <img width="932" alt="image" src="https://github.com/user-attachments/assets/53865b49-1da9-4335-b669-f196b80abf3c">
+
+  <img width="1303" alt="image" src="https://github.com/user-attachments/assets/a426c1f6-6efa-4e96-b397-8121a87fea1c">
+
+    2) 오케스레이터
+     * 이벤트 기반 아키텍처의 중재자 패턴
+     * 중재자는 트랜잭션을 구성하는 파트를 하나씩 호출하여 성공/실패 여부를 기록 그 결과에 따른 흐름 조정
+     * 중재자는 2단계 커밋을 사용
+
+ <img width="850" alt="image" src="https://github.com/user-attachments/assets/7656eca5-b355-4f75-96f8-a0924d161726">
+
+
+
+```text
+ 2단계 커밋(two phase commit)
+
+첫 번째
+첫 번째 단계에서는 노드들에게 트랜잭션 생성과 함께 명령을 수행한다. 여러 노드에서 실행되는 트랜잭션 관리를 위해 이 트랜잭션 id는 coordinator가 관리한다.
+
+ 
+두 번째
+모든 노드들에게 commit이 가능한지 물어본다. 이 요청에 각 노드들은 현재 트랜잭션을 commit 할 수 있는지 응답한다.
+
+ 
+세 번째
+두 번째 단계에서 모든 노드들에게 받은 응답을 취합한다. 하나라도 NO가 있다면 전체 노드들에게 abort를 보내고, 모두가 OK라면 commit을 보낸다.
+여기서 재미있는 포인트는 이 요청이 실패했을 때 발생한다. 결과를 취합해서 commit 또는 abort 하라는 명령을 전파할 텐데, 이 요청이 실패하면 어떻게 될까? 아니면 이 순간에 coordinator가 정전으로 죽었다면?
+
+각 노드 입장에서 생각해보면 commit/abort 여부를 coordinator에게 듣지 못하고서는 결정할 수 없다. 따라서 여기까지 진행이 됐다면 안타깝게도 최종 결정을 coordinator에게 들을 때까지 기다릴 수밖에 없다.
+```
 
 2) CQRS 패턴
 
